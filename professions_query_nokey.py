@@ -86,7 +86,7 @@ def guild_professions(guild_chars_name, guild_chars_realm, api_key, base_url):
 def save_to_txt(guild_chars_name, guild_chars_professions1, guild_chars_professions2):
     f = open('guild_profs.csv', 'w')
 
-    for i in xrange(1,len(guild_chars_name)):
+    for i in xrange(0,len(guild_chars_name)):
         s = guild_chars_name[i] + ', ' + guild_chars_professions1[i] + ', ' + guild_chars_professions2[i] + '\n'
         f.write(s.encode('utf8'))
 
