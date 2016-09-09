@@ -12,8 +12,10 @@ import simplejson as json
 import csv
 from array import *
 
+api_key = "yh5pnbmtfqmhhh675gtrvnfn2at6x4xk"
+#keyfile = open("api_key", "r")
+#api_key = keyfile.read()
 
-api_key = ""
 base_url = "https://eu.api.battle.net/wow/"
 
 guild_name = "Phased"
@@ -109,6 +111,7 @@ dungeon_ids = ([1, "Heroic" ],
 [96, "NHmythic" ])
 
 def query_api(url):
+    print url
     try:
         s = requests.get(url).json()
         pass
@@ -123,23 +126,23 @@ def query_api(url):
         return s
 
 def guild_members(guild_name, guild_realm, api_key, base_url):
-	req_url = base_url + "guild/" + guild_realm + "/" + guild_name + "?fields=members&locale=en_GB&apikey=" + api_key
+    req_url = base_url + "guild/" + guild_realm + "/" + guild_name + "?fields=members&locale=en_GB&apikey=" + api_key
+    guild_chars_name = []
+    guild_chars_level = []
+    guild_chars_realm = []
 
-	guild_chars_name = []
-	guild_chars_level = []
-	guild_chars_realm = []
+    s = query_api(req_url)
 
-	s = query_api(req_url)
-	for i in xrange(1,len(s["members"])):
-		ind_names = i-1
+    for i in xrange(1,len(s["members"])):
+    	ind_names = i-1
 
-		guild_chars_name.append(s["members"][ind_names]["character"]["name"])
-		guild_chars_level.append(s["members"][ind_names]["character"]["level"])
-		guild_chars_realm.append(s["members"][ind_names]["character"]["realm"])
+    	guild_chars_name.append(s["members"][ind_names]["character"]["name"])
+    	guild_chars_level.append(s["members"][ind_names]["character"]["level"])
+    	guild_chars_realm.append(s["members"][ind_names]["character"]["realm"])
 
-	guild_chars_name, guild_chars_realm = remove_non_max(guild_chars_name, guild_chars_realm, guild_chars_level)
+    guild_chars_name, guild_chars_realm = remove_non_max(guild_chars_name, guild_chars_realm, guild_chars_level)
 
-	return guild_chars_name, guild_chars_realm
+    return guild_chars_name, guild_chars_realm
 
 def remove_non_max(guild_chars_name, guild_chars_realm, guild_chars_level):
 	while guild_chars_level.count(110) < len(guild_chars_level):
@@ -153,7 +156,7 @@ def remove_non_max(guild_chars_name, guild_chars_realm, guild_chars_level):
 
 	return guild_chars_name, guild_chars_realm
 
-def get_lockouts(guild_chars_name, guild_chars_realm, api_key, base_url)
+def get_lockouts(guild_chars_name, guild_chars_realm, api_key, base_url):
     char_dungeon_lockouts = []
 
     for i in xrange(1,len(guild_chars_name)):
@@ -162,45 +165,53 @@ def get_lockouts(guild_chars_name, guild_chars_realm, api_key, base_url)
         s = query_api(req_url)
         STATS_RAIDS = 5
         STATS_LEGION_RAIDS = 6
-        char_dungeon_lockouts.append(s["statistics"][STATS_RAIDS]["subCategories"][STATS_LEGION_RAIDS]["statistics"])
+        char_dungeon_lockouts.append(s["statistics"]["subCategories"][STATS_RAIDS]["subCategories"][STATS_LEGION_RAIDS]["statistics"])
 
     return char_dungeon_lockouts
 
-def get_expiry_time(char_dungeon_lockouts, dungeon_ids)
+def get_expiry_time(char_dungeon_lockouts, dungeon_ids):
 
     current_time = int(time.time()) #current unix time
     current_time_utc = datetime.utcnow()
-    current_hour = current_time_utc.hour()
+    current_hour = current_time_utc.hour
     current_day = time.strftime("%w") #current day -- 0 = sunday
     # start current_day on Wednesday
-    if current_day < 3
-        current_day = current_day + 5
+    if int(current_day) < 3:
+        current_day = int(current_day) + 5
     else:
-        current_day = current_day - 3
+        current_day = int(current_day) - 3
 
-    # time since previous Wednesday, 7AM UTC
-    if current_day == 0:
-        if current_hour < 7:
-            reset_time = date(current_time_utc.year, current_time_utc.month, current_time_utc.day) + 3600*7
-            elapsed = int(time.mktime(reset_time.timetuple()))
+    # get time until next 7AM UTC
+    if current_hour < 7:
+        reset_time = date(current_time_utc.year, current_time_utc.month, current_time_utc.day) + 3600*7
+        time_remaining = reset_time - int(time.mktime(reset_time.timetuple())) #seconds
+    else:
+        days_till_reset = current_time_utc.day + (7 - int(current_day))
+        hours_till_reset = 7 - current_time_utc.hour
+        minutes_till_reset = current_time_utc.minute
 
-        else:
+        time_remaining = (((hours_till_reset) * 60) + minutes_till_reset) * 60 #seconds
 
+    day_reset = time_remaining
+    week_reset = time_remaining + (7 - int(current_day))*(24 * 60 * 60)
 
-    for i in xrange(1,len(char_dungeon_lockouts))
-        for j in xrange(1,len(dungeon_ids))
+    print day_reset
+    print week_reset
+
+    for i in xrange(0,len(char_dungeon_lockouts)):
+        for j in xrange(0,len(dungeon_ids)):
             s = char_dungeon_lockouts[i][j]["lastUpdated"]
             lockout_remaining = []
             if s == 0:
-                lockout_remaining[j] = "Expired"
-            elif dungeon_ids[j][2].find("heroic") || dungeon_ids[j][2].find("Heroic"):
-
-            elif dungeon_ids[j][2].find("mythic") || dungeon_ids[j][2].find("Mythic"):
-
+                lockout_remaining.append("Expired")
+            elif dungeon_ids[j][1].find("heroic") | dungeon_ids[j][1].find("Heroic"):
+                lockout_remaining.append(day_reset)
+            elif dungeon_ids[j][1].find("mythic") | dungeon_ids[j][1].find("Mythic"):
+                lockout_remaining.append(week_reset)
             else:
                 print "Error with dungeon difficulty."
 
-
+    return lockout_remaining
 
 def save_to_txt(guild_chars_name, guild_chars_professions1, guild_chars_professions2):
     f = open('guild_profs.csv', 'w')
@@ -212,6 +223,9 @@ def save_to_txt(guild_chars_name, guild_chars_professions1, guild_chars_professi
     f.close()
 
 guild_chars_name, guild_chars_realm = guild_members(guild_name, guild_realm, api_key, base_url)
-guild_chars_professions1, guild_chars_professions2 = guild_professions(guild_chars_name, guild_chars_realm, api_key, base_url)
+char_dungeon_lockouts = get_lockouts(guild_chars_name, guild_chars_realm, api_key, base_url)
+expiry_times = get_expiry_time(char_dungeon_lockouts, dungeon_ids)
 
-save_to_txt(guild_chars_name, guild_chars_professions1, guild_chars_professions2)
+print expiry_times
+
+#save_to_txt(guild_chars_name, guild_chars_professions1, guild_chars_professions2)
