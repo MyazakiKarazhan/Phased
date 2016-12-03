@@ -35,6 +35,7 @@ Paimai, Skinning, Enchanting
 Mtut, Mining, Herbalism
 Kniv, Mining, Jewelcrafting
 Stompyy, Jewelcrafting, Mining
+Chaoslol, Alchemy, Enchanting
 Moorder, Mining, Herbalism
 Flammewild, Alchemy, Enchanting
 Trejgoth, Jewelcrafting, Herbalism
@@ -60,11 +61,11 @@ Ambiguous, Alchemy, Enchanting
 Drfizzle, Enchanting, None
 Uglizon, None, Enchanting
 Emfargo, Tailoring, Skinning
-Thunderdank, Leatherworking, None
-Shin, Enchanting, None
-Drfizzy, None, Enchanting
-Revialea, None, Mining
-Fatali, Jewelcrafting, Herbalism
-Fizzx, Jewelcrafting, Skinning
-Smoothy, Alchemy, Mining
 Dyhanu, Leatherworking, Herbalism
+Thunderdank, Alchemy, None
+Shin, Enchanting, None
+Smoothy, None, Mining
+Drfizzy, None, Enchanting
+Fizzx, Blacksmithing, Skinning
+Revialea, Jewelcrafting, Mining
+Vodox, Leatherworking, None
