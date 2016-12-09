@@ -21,7 +21,6 @@ Tuyna, Jewelcrafting, Enchanting
 Rektharthorn, Blacksmithing, Mining
 Senll, Enchanting, Herbalism
 Kage, Leatherworking, Skinning
-Zugzugthorn, Alchemy, Herbalism
 Trejwar, Blacksmithing, Mining
 Brudmar, Alchemy, Herbalism
 Amagaddon, Jewelcrafting, Mining
@@ -36,7 +35,6 @@ Kniv, Mining, Jewelcrafting
 Stompyy, Jewelcrafting, Mining
 Chaoslol, Alchemy, Enchanting
 Moorder, Mining, Herbalism
-Trejgoth, Jewelcrafting, Herbalism
 Evo, None, None
 Gribbz, Alchemy, Herbalism
 Lethean, Enchanting, Blacksmithing
@@ -55,9 +53,8 @@ Ambiguous, Alchemy, Enchanting
 Uglizon, Tailoring, Enchanting
 Emfargo, Leatherworking, Skinning
 Dyhanu, Alchemy, Herbalism
-Thunderdank, Enchanting, None
 Shin, None, None
-Smoothy, None, Mining
-Fizzx, Blacksmithing, Skinning
-Revialea, Leatherworking, Mining
-Vodox, Jewelcrafting, None
+Smoothy, Blacksmithing, Mining
+Fizzx, Leatherworking, Skinning
+Revialea, Jewelcrafting, Mining
+Vodox, None, None
